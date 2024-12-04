@@ -19,7 +19,9 @@ const [chosenCount, setChosenCount] = useState(0);
       <Header />
       <main>
         <ConfigureCounter onSet={handleSetCount} />
-        <Counter initialCount={chosenCount} />
+        <Counter 
+          key={chosenCount}
+          initialCount={chosenCount} />
       </main>
     </>
   );
