@@ -1,4 +1,4 @@
-import { useState, memo, useCallback } from 'react';
+import { useState, memo, useCallback, useMemo } from 'react';
 
 import IconButton from '../UI/IconButton.jsx';
 import MinusIcon from '../UI/Icons/MinusIcon.jsx';
@@ -27,13 +27,13 @@ function isPrime(number) {
   return true;
 }
 
-// memo looks at props and determine if component
+// memo looks at props and determines if component
 // prop value has changed;  if the same, will not
 // re-execute (for arrays and objects need to be same
 // in memory).  Counter would only re-execute if 
 // initialCount changes or if its Counter internal state changes.
 // memo only prevents fx executions triggered by parent component
-// internal state changes will trigger component
+// internal state changes that trigger component
 // re-execution; memo impacts external changes (not internal)
 // nested fx will also not re-execute if Counter doesn't re-execute
 // can remove memo() based on updated component composition.
@@ -41,7 +41,14 @@ function isPrime(number) {
 // as old counter value (but not worth performance degredation)
 const Counter = memo(function Counter({ initialCount }) {
   log('<Counter /> rendered', 1);
-  const initialCountIsPrime = isPrime(initialCount);
+
+  // memo() is wrapped around component fx; useMemo() is
+  // wrapped around normal fx that are executed in component
+  // fx to prevent their execution; should be used with complex
+  // calcs; useMemo will store result
+  // and only re-executed if dependency changes
+  const initialCountIsPrime = useMemo(() => isPrime(initialCount),
+    [initialCount]);
 
   const [counter, setCounter] = useState(initialCount);
 
